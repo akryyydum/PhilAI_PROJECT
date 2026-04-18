@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     `;
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash-lite",
+      model: "gemini-3-flash-preview",
       systemInstruction: systemInstructions // This anchors the AI's behavior
     });
 
