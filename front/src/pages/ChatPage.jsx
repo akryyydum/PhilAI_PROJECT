@@ -303,6 +303,8 @@ const ChatPage = () => {
     <div
       style={{
         minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
         paddingTop: "calc(var(--topbar-height) + 24px)", // leaves room for your fixed topbar
         paddingBottom: 110, // leaves room for the fixed input bar
         boxSizing: "border-box",
@@ -313,6 +315,9 @@ const ChatPage = () => {
         style={{
           width: "min(920px, calc(100vw - 32px))",
           margin: "0 auto",
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
         }}
         aria-live="polite"
       >
@@ -332,56 +337,67 @@ const ChatPage = () => {
           </div>
         )}
 
-        {messages.map((msg) => {
-          const isUser = msg.sender === "user";
-          return (
-            <div
-              key={msg.id}
-              style={{
-                display: "flex",
-                justifyContent: isUser ? "flex-end" : "flex-start",
-                marginBottom: 10,
-              }}
-            >
-              <div
-                style={{
-                  maxWidth: "min(820px, 90%)",
-                  padding: "10px 12px",
-                  borderRadius: 16,
-                  background: isUser
-                    ? "rgba(255,255,255,0.18)"
-                    : "rgba(255,255,255,0.10)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  backdropFilter: "blur(10px)",
-                  WebkitBackdropFilter: "blur(10px)",
-                }}
-              >
-                <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 4 }}>
-                  {isUser ? "You" : "PhilAI"}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+          }}
+        >
+          <div>
+            {messages.map((msg) => {
+              const isUser = msg.sender === "user";
+              return (
+                <div
+                  key={msg.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: isUser ? "flex-end" : "flex-start",
+                    marginBottom: 10,
+                  }}
+                >
+                  <div
+                    style={{
+                      maxWidth: "min(820px, 90%)",
+                      padding: "10px 12px",
+                      borderRadius: 16,
+                      background: isUser
+                        ? "rgba(255,255,255,0.18)"
+                        : "rgba(255,255,255,0.10)",
+                      border: "1px solid rgba(255,255,255,0.18)",
+                      backdropFilter: "blur(10px)",
+                      WebkitBackdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 4 }}>
+                      {isUser ? "You" : "PhilAI"}
+                    </div>
+                    <div style={{ whiteSpace: "pre-wrap" }}>{msg.text}</div>
+                  </div>
                 </div>
-                <div style={{ whiteSpace: "pre-wrap" }}>{msg.text}</div>
+              );
+            })}
+
+            {isBotTyping && (
+              <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 16,
+                    background: "rgba(255,255,255,0.10)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    opacity: 0.9,
+                  }}
+                >
+                  PhilAI is typing…
+                </div>
               </div>
-            </div>
-          );
-        })}
-
-        {isBotTyping && (
-          <div style={{ display: "flex", justifyContent: "flex-start" }}>
-            <div
-              style={{
-                padding: "10px 12px",
-                borderRadius: 16,
-                background: "rgba(255,255,255,0.10)",
-                border: "1px solid rgba(255,255,255,0.18)",
-                opacity: 0.9,
-              }}
-            >
-              PhilAI is typing…
-            </div>
+            )}
           </div>
-        )}
 
-        <div ref={bottomRef} />
+          <div ref={bottomRef} />
+        </div>
       </div>
 
       <form
