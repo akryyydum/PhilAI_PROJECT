@@ -1,16 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-function makeBotReply(userText) {
-  const text = userText.toLowerCase();
-
-  if (text.includes("hello") || text.includes("hi")) {
-    return "Hi! I’m PhilAI (front-end demo). Ask me anything and I’ll respond with a placeholder reply.";
-  }
-
-  return `Front-end demo reply: I received: "${userText}". Wire me to your backend to generate real PhilAI responses.`;
-}
-
 function makeId() {
   return typeof crypto !== "undefined" && crypto.randomUUID
     ? crypto.randomUUID()
@@ -28,15 +18,41 @@ const ChatPage = () => {
   const seededRef = useRef(false);
   const bottomRef = useRef(null);
 
-  const queueBotReply = (userText) => {
+  // UPDATED: Now fetches from your Express backend
+  const queueBotReply = async (userText) => {
     setIsBotTyping(true);
-    window.setTimeout(() => {
+    
+    try {
+      const response = await fetch("http://localhost:5000/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userText }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages((prev) => [
+          ...prev,
+          { id: makeId(), sender: "philAI", text: data.reply },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { id: makeId(), sender: "philAI", text: `Error: ${data.error}` },
+        ]);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
       setMessages((prev) => [
         ...prev,
-        { id: makeId(), sender: "philAI", text: makeBotReply(userText) },
+        { id: makeId(), sender: "philAI", text: "Sorry, I couldn't connect to the server." },
       ]);
+    } finally {
       setIsBotTyping(false);
-    }, 650);
+    }
   };
 
   // Seed the chat once from LandingPage navigate state
