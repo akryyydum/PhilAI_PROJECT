@@ -79,6 +79,13 @@ const ChatPage = () => {
   const initialMessage = location.state?.initialMessage;
   const initialSeed = (initialMessage ?? "").trim();
 
+  const API_BASE_URL = (
+    import.meta.env.VITE_API_BASE_URL ||
+    (import.meta.env.DEV
+      ? "http://localhost:5000"
+      : "https://philai-project-2.onrender.com")
+  ).replace(/\/+$/, "");
+
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState(() =>
     initialSeed ? [{ id: makeId(), sender: "user", text: initialSeed }] : []
@@ -112,7 +119,7 @@ const ChatPage = () => {
     setIsBotTyping(true);
     
     try {
-      const response = await fetch("http://localhost:5000/api/chat", {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -142,7 +149,7 @@ const ChatPage = () => {
     } finally {
       setIsBotTyping(false);
     }
-  }, []);
+  }, [API_BASE_URL]);
 
   const sendUserMessage = useCallback(
     (text) => {

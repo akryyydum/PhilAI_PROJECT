@@ -8,7 +8,8 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://phil-ai-project-yefr.vercel.app' // Add your Vercel URL here
+    'https://phil-ai-project-yefr.vercel.app',
+    'https://philai-project-2.onrender.com'
   ]
 }));
 app.use(express.json());
