@@ -74,6 +74,32 @@ function makeId() {
     : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+const STORAGE_KEY = "philAI.chat.messages.v1";
+
+function loadStoredMessages() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+
+    // Basic shape validation to avoid crashes on bad data
+    const sanitized = parsed
+      .filter((m) => m && typeof m === "object")
+      .map((m) => ({
+        id: typeof m.id === "string" && m.id ? m.id : makeId(),
+        sender: m.sender === "user" || m.sender === "philAI" ? m.sender : "philAI",
+        text: typeof m.text === "string" ? m.text : "",
+      }))
+      .filter((m) => m.text.trim().length > 0);
+
+    return sanitized;
+  } catch {
+    return null;
+  }
+}
+
 const ChatPage = () => {
   const location = useLocation();
   const initialMessage = location.state?.initialMessage;
@@ -87,9 +113,11 @@ const ChatPage = () => {
   ).replace(/\/+$/, "");
 
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState(() =>
-    initialSeed ? [{ id: makeId(), sender: "user", text: initialSeed }] : []
-  );
+  const [messages, setMessages] = useState(() => {
+    const stored = loadStoredMessages();
+    if (stored?.length) return stored;
+    return initialSeed ? [{ id: makeId(), sender: "user", text: initialSeed }] : [];
+  });
   const [isBotTyping, setIsBotTyping] = useState(false);
 
   const [isListening, setIsListening] = useState(false);
@@ -252,12 +280,24 @@ const ChatPage = () => {
     if (seededRef.current) return;
     seededRef.current = true;
     if (!initialSeed) return;
+    // If we already have stored history, don't re-seed and duplicate.
+    if (messages.length > 0) return;
     const t = setTimeout(() => {
       queueBotReply(initialSeed);
     }, 0);
 
     return () => clearTimeout(t);
-  }, [initialSeed, queueBotReply]);
+  }, [initialSeed, queueBotReply, messages.length]);
+
+  // Persist chat history across refresh
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch {
+      // ignore storage failures (quota, privacy mode, etc.)
+    }
+  }, [messages]);
 
   // Auto-scroll to bottom on new messages / typing indicator
   useEffect(() => {
