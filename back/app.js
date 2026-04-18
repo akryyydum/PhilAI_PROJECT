@@ -4,7 +4,13 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://phil-ai-project-yefr.vercel.app' // Add your Vercel URL here
+  ]
+}));
 app.use(express.json());
 
 const chatRoutes = require('./routes/chatRoutes');
