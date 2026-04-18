@@ -1,10 +1,39 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useLayoutEffect, useRef } from 'react';
 import Orb from './bg/Orb'
 import LandingPage from './pages/LandingPage'
 import Topbar from "./pages/topbar";
 import Chat from "./pages/ChatPage";
 function App() {
+  const navRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+
+    const setTopbarHeight = () => {
+      const height = el.getBoundingClientRect().height;
+      if (height > 0) {
+        document.documentElement.style.setProperty(
+          '--topbar-height',
+          `${Math.ceil(height)}px`
+        );
+      }
+    };
+
+    setTopbarHeight();
+
+    const resizeObserver = new ResizeObserver(() => setTopbarHeight());
+    resizeObserver.observe(el);
+
+    window.addEventListener('resize', setTopbarHeight);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', setTopbarHeight);
+    };
+  }, []);
+
   return (
     
     <div className="app-shell">
@@ -18,7 +47,7 @@ function App() {
         />
       </div>
 
-      <div className='navi'>
+      <div className='navi' ref={navRef}>
         <Topbar />
       </div>
 

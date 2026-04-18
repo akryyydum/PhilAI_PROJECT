@@ -12,6 +12,32 @@
     padding: 0 20px;
     box-sizing: border-box;
 }
+
+.topbar-main {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.menu-button svg {
+  width: 24px;
+  height: 24px;
+}
 .logo h1 {
     margin: 0;
     font-size: 1.5rem;
@@ -22,6 +48,14 @@
     display: flex;
     align-items: center;
     gap: 18px;
+}
+
+.nav-desktop {
+  justify-content: flex-end;
+}
+
+.nav-mobile {
+  display: none;
 }
 .nav-link {
     color: #fff;
@@ -35,6 +69,66 @@
     border-radius: 10px;
     padding: 8px 12px;
     cursor: pointer;
+}
+
+/* Responsive layout: keep the same content, just reflow on small screens */
+@media (max-width: 640px) {
+  .topbar {
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+
+  .logo h1 {
+    font-size: 1.25rem;
+  }
+
+  .menu-button {
+    display: inline-flex;
+  }
+
+  .nav-desktop {
+    display: none;
+  }
+
+  .nav-mobile {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #fff;
+    background-color: #1a1a1a;
+    box-sizing: border-box;
+  }
+
+  .nav-mobile .nav-link,
+  .nav-mobile .login-button {
+    width: 100%;
+  }
+
+  .nav-mobile .login-button {
+    text-align: left;
+  }
+
+  .nav-link {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .logo h1 {
+    font-size: 1.15rem;
+  }
+
+  .nav-links {
+    column-gap: 12px;
+  }
 }
 /* From Uiverse.io by reglobby */ 
 .user-profile {
