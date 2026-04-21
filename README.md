@@ -28,4 +28,5 @@ AI: Google Gemini 2.5 Flash
 
 Deployment: Vercel (Front) & Render (Back)
 
+
 Disclaimer: PhilAI is for informational purposes only and does not provide professional legal advice. Always consult with a licensed attorney for legal matters.
